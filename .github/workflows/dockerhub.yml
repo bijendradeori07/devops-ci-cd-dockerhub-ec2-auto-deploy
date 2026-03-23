@@ -1,0 +1,26 @@
+name: Build and Push Docker Image to Docker Hub
+
+on:
+  push:
+     branches:
+       - main
+
+jobs:
+  docker:
+     runs-on: ubuntu-latest
+
+     steps:
+       - name: Checkout source code
+         uses: actions/checkout@v4
+
+       - name: Login to Docker Hub
+         uses: docker/login-action@v3
+         with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+       - name: Build Docker Image
+         run: docker build -t bijendradeori07/dockerhub-image-registry-github-actions:latest .
+
+       - name: Push Docker image
+         run: docker push bijendradeori07/dockerhub-image-registry-github-actions:latest
