@@ -13,14 +13,20 @@ jobs:
        - name: Checkout source code
          uses: actions/checkout@v4
 
+       - name: Set up Docker Buildx
+         uses: docker/setup-buildx-action@v3
+
        - name: Login to Docker Hub
          uses: docker/login-action@v3
          with:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-       - name: Build Docker Image
-         run: docker build -t bijendradeori07/dockerhub-image-registry-github-actions:latest .
-
-       - name: Push Docker image
-         run: docker push bijendradeori07/dockerhub-image-registry-github-actions:latest
+       - name: Build and Push Image
+         uses: docker/build-push-action@v6
+         with:
+            context: .
+            push: true
+            tags:  |
+              bijendradeori07/dockerhub-image-registry-github-actions:latest
+              bijendradeori07/dockerhub-image-registry-github-actions:v1
