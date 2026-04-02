@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to Docker Hub
+name: Full CI/CD Pipeline
 
 on:
   push:
@@ -29,4 +29,20 @@ jobs:
             push: true
             tags:  |
               bijendradeori07/dockerhub-image-registry-github-actions:latest
-              bijendradeori07/dockerhub-image-registry-github-actions:v1
+              bijendradeori07/dockerhub-image-registry-github-actions:v1              
+       - name: Deploy to EC2 via SSH
+         uses: appleboy/ssh-action@v0.1.10
+         with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USER }}
+            key: @{{ secrets.EC2_SSH_KEY }}
+            script:  |
+              sudo docker pull bijendradeori07/dockerhub-image-registry-github-actions:latest
+              
+              sudo docker stop app || true
+              sudo docker rm app || true
+              
+              sudo docker run -d \ 
+                --name app \ 
+                -p 80:80 \
+                bijendradeori07/dockerhub-image-registry-github-actions:latest
