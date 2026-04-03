@@ -39,9 +39,14 @@ jobs:
             script:  |
               sudo docker pull bijendradeori07/dockerhub-image-registry-github-actions:latest
               
-              # Stop ALL containers using port 80
-              sudo docker stop app || true
-              sudo docker rm app || true
+              # Stop all containers safely
+              sudo docker ps -q || xargs -r sudo docker stop
+
+              # Remove all containers
+              sudo docker ps -aq || xargs -r sudo docker rm
               
+              # Kill anything using port 80 (IMPORTANT)
+              sudo fuser -k 80/tcp || true
+
               # Run fresh container
               sudo docker run -d --name app -p 80:80 bijendradeori07/dockerhub-image-registry-github-actions:latest
