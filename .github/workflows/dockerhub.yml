@@ -42,5 +42,4 @@ jobs:
               sudo docker stop app || true
               sudo docker rm app || true
               
-              sudo docker run -d --name app -p 80:80 bijendradeori07/
-dockerhub-image-registry-github-actions:latest
+              sudo docker run -d --name app -p 80:80 bijendradeori07/dockerhub-image-registry-github-actions:latest
