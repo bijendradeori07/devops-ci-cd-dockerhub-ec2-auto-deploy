@@ -39,8 +39,8 @@ jobs:
             script:  |
               sudo docker pull bijendradeori07/dockerhub-image-registry-github-actions:latest
               
-              # Stop all containers safely
-              sudo docker ps -q || xargs -r sudo docker stop
+              # Force remove container if exists
+              sudo docker rm -f app || true
 
               # Remove all containers
               sudo docker ps -aq || xargs -r sudo docker rm
