@@ -37,16 +37,13 @@ jobs:
             username: ${{ secrets.EC2_USER }}
             key: ${{ secrets.EC2_SSH_KEY }}
             script:  |
-              sudo docker pull bijendradeori07/dockerhub-image-registry-github-actions:latest
+              docker pull ${{ secrets.DOCKERHUB_USERNAME }}/ dockerhub-image-registry-github-actions:latest
               
-              # Force remove container if exists
-              sudo docker rm -f app || true
+              # Stop ALL running container
+              docker stop $(docker ps -q) || true
 
               # Remove all containers
-              sudo docker ps -aq || xargs -r sudo docker rm
+              docker rm $(docker ps -aq) || true              
               
-              # Kill anything using port 80 (IMPORTANT)
-              sudo fuser -k 80/tcp || true
-
               # Run fresh container
-              sudo docker run -d --name app -p 80:80 bijendradeori07/dockerhub-image-registry-github-actions:latest
+              docker run -d -p 80:80 --name app ${{ secrets.DOCKERHUB_USERNAME }}/dockerhub-image-registry-github-actions:latest
